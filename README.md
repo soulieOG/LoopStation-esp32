@@ -81,13 +81,16 @@ For the coding part of the project, Arduino IDE was used for the whole duration 
 <a name="logic"></a>
 ## The logic behind the system  
 Now that the objectives are clear, a logic behind what the device does can be defined. This is achieved with two simple questions:
-- What am I doing?  
-[IMG]  
+- What am I doing?
+
+![IMG](https://github.com/user-attachments/assets/5a25336a-b493-4db5-a29e-3dadfb8e61ca)
+
 
 It is important to note that once the loop station begins a loop (records in the first track), the device is ALWAYS reproducing on loop. That does not mean that if it transitions to recording the loop station stops playing, it only shifts its main focus to the recording task. If the loop station is in the play state, that simply means: 1- A loop has been established 2-It is not currently recording.
 
-- Where am I?   
-[IMG]  
+- Where am I?
+
+![IMG](https://github.com/user-attachments/assets/1b248a47-a8e8-4f66-8429-89a96896f6c7)
 
 The program answers to a doble status method. When the device it's booted, it enters an idle state in which its only purpose is detecting if the user wants to start recording (pressing the record button). Anytime a record wants to be made (the record button was pressed), at the beginning of each loop (for coordination purposes), the loop station enters a recording state. Once it is done recording, it goes into the play status, which implies that it already has a defined loop going (has a defined loopLength at the very least, be it silence or anything that was recorded on Track 1).  
 
@@ -568,7 +571,7 @@ The goal here is to reproduce a escale, to make sure that the module is in fact 
 
 If no escale can be heard, first check the soldering and cables. If that is okay, then check agaim de XMS connection, because it's the most likely cause of the silence and it was the main issue of the development of this project.
 
-[PINS IMAGE]
+![PINS IMAGE](https://github.com/user-attachments/assets/cfa11344-9418-475f-9f3f-2969f2969c12)
 
 ```
 // I2S Pins
@@ -583,14 +586,15 @@ If no escale can be heard, first check the soldering and cables. If that is okay
 To properly observe if the microphone works, this time the aid of the serial plotter will be needed (to visualize waves). If the microphone is working, waves should appear (reacting to sounds). If there is something wrong, a flat line should show. If the case is the latter, check the soldering and the cables. If proper soldering is assured and cables seem to work fine, then it might be a dead module.
 - Small indication: if it is not working check that the Port is the right one, and that USB CDC On Boot is "Enabled".
 
-[PINS IMAGE]
+![PINS IMAGE](https://github.com/user-attachments/assets/fb6baea6-edc9-4d88-a0e4-c0cea70d70d7)
 
 #### LEDs, buttons and potentiometers
 This components are easily tested with the code itself. LEDs can be easily tested with a simple circuit that does not require the ESP, but it will follow the same simple scheme of power, resistance and LED (traditional circuit).
 
 And the pins for this components should be as it follows:  
 
-[PINS IMAGE]
+![PINS IMAGE](https://github.com/user-attachments/assets/2f9fb190-85d8-4e91-9b73-356c9868b920)
+
 
  ```
 // Potenciometers pins
@@ -618,12 +622,13 @@ Once it has been assured that the LEDs work, it can be determined if the buttons
 ### Putting the loopStation together
 Now that it was assured that everything works just fine, this part only requires the upmost care when connecting what to where. The biggest issues arise here, so proceed with caution. This is the layout presented in the version of the loop station that was presented for the class. Following the pin images inserted above, the circuit should look comething similar to this (does not include the INMP441 and PCM5102):  
 
-[TINKERCAD VERSION OF THE CIRCUIT]
+![WOKWI VERSION OF THE CIRCUIT](https://github.com/user-attachments/assets/33ca84f7-0582-46aa-82de-63e626080f50)
 
 
 - Note that there are many ways to connect this, but it is limited by the cables, the use of a board expansion or others. In this case, this is the example of the assemble done trying to achieve a good sectioning of the parts of the hardware. This schematic translates to many real life versions, being the one done for the presentation of the project this one:  
 
-[IRL HARDWARE PIC]  
+![IRL HARDWARE PIC](https://github.com/user-attachments/assets/b0b430c9-8f53-4999-ac10-a73fe7b09d6e)
+
 
 As a general rule, one should not be afraid of using intermediaries such as protoboards or expansion boards, that simplify this process. The only thing to keep in mind is the possible interferences that come along the cables' type, the length and its possible impacts in the audio input/output.
 
