@@ -28,12 +28,11 @@
 #define MAX_LOOP_SECONDS 20
 #define SAMPLE_RATE   48000
 
-
 // Estados
 enum SelectedTrack { TRACK1, TRACK2, TRACK3 };  // Donde estoy?
 enum SystemStatus { IDLE, RECORDING, PLAYING }; // Que estoy haciendo?
 
-bool pendingRecord = false; // Grabación pendiente
+bool pendingRecord = false; // Grabacion pendiente
 bool stopAtLoopEnd = false; // Parada automatica de grabar cuando llego al final del loop
 
 // Variables para mis estados
@@ -44,11 +43,11 @@ SystemStatus currentStatus = IDLE;
 const uint32_t MAX_SAMPLES = MAX_LOOP_SECONDS * SAMPLE_RATE;
 
 // Buffers en PSRAM
-int16_t* track1 = NULL;
+int16_t* track1 = NULL; // no debería ser int32_t?
 int16_t* track2 = NULL;
 int16_t* track3 = NULL;
 
-// Varianles que definen mi loop
+// Variables que definen mi loop
 uint32_t loopLength = 0;
 uint32_t currentPos = 0;
 
@@ -57,7 +56,7 @@ void setup() {
   delay(1000);
 
   //Potenciometros
-  analogReadResolution(12); // Establece resolución de 0 a 4095
+  analogReadResolution(12); // Establece resolucion de 0 a 4095 (De 10 a 12 bits)
 
   // Entrada de los potenciometros
   pinMode(POT_T1, INPUT);
@@ -103,8 +102,8 @@ void setupI2S() {
     .channel_format = I2S_CHANNEL_FMT_ONLY_LEFT,
     .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S),
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-    .dma_buf_count = 8,
-    .dma_buf_len = 1024,
+    .dma_buf_count = 4,
+    .dma_buf_len = 128,
     .use_apll = true 
   };
 
@@ -134,9 +133,10 @@ void loop() {
     sampleIn = sampleIn >> 2; // Ajuste para evitar ruidos de distorsion y demas
 
     if (currentPos % 1024 == 0) { // Actualiza volumen cada 1024 muestras
-        v1 = getVolume(POT_T1);
-        v2 = getVolume(POT_T2);
-        v3 = getVolume(POT_T3);
+      float tmp;
+      v1 = ((tmp = getVolume(POT_T1)) != v1) ? tmp : v1;
+      v2 = ((tmp = getVolume(POT_T2)) != v2) ? tmp : v2;
+      v3 = ((tmp = getVolume(POT_T3)) != v3) ? tmp : v3;
     }
 
     if (currentPos % 441 == 0){ // Comprobamos botones y hacemos update de LEDS cada ciertas muestras
@@ -151,9 +151,10 @@ void loop() {
     }
 
     // LOGICA DE REPRODUCCION
-    int32_t s1 = (int32_t)(track1[currentPos] * v1);  // Calculo la proporcion de volumen de cada pista
-    int32_t s2 = (int32_t)(track2[currentPos] * v2);
-    int32_t s3 = (int32_t)(track3[currentPos] * v3);
+    // Calculo del volumen y control de mute forzado
+    int32_t s1 = (v1 < 0.01f) ? 0 : (int32_t)(track1[currentPos] * v1);
+    int32_t s2 = (v2 < 0.01f) ? 0 : (int32_t)(track2[currentPos] * v2);
+    int32_t s3 = (v3 < 0.01f) ? 0 : (int32_t)(track3[currentPos] * v3);
 
     // Reproduzco todas las pistas que no esten grabando en ese momento
     if (currentStatus == RECORDING) {
@@ -169,7 +170,7 @@ void loop() {
     if (mixed < -32768) mixed = -32768;
     int16_t sampleOut = (int16_t)mixed;
 
-    // SALIDA
+    // SALIDA DE AUDIO
     i2s_write(I2S_NUM_0, &sampleOut, sizeof(int16_t), &bytesWritten, portMAX_DELAY);
 
     // LOGICA DEL LOOP
@@ -216,7 +217,7 @@ void buttons() {
     return;
   }
 
-  // Cambio el focus solo si realmente ha cambiado
+  // Cambio el focus solo si realmente ha cambiado y no estoy grabando
   if(currentStatus != RECORDING){
     if (track1 && trackFocus != TRACK1) {
       trackFocus = TRACK1;
@@ -238,13 +239,13 @@ void buttons() {
 
   if (currentRecState == HIGH && lastState == LOW) { //Flanco de subida?
     handleActionBtn();
-    delay(50); // Debounce
+    delay(50);
   }
   lastState = currentRecState;
 }
 
 void handleActionBtn() {
-    // CASO A: Es la primera grabación (Track 1 vacío)
+    // CASO A: Es la primera grabacion (Track 1 vacio)
     if (currentStatus == IDLE && trackFocus == TRACK1) {
         currentStatus = RECORDING;
         currentPos = 0;
@@ -272,7 +273,11 @@ void handleActionBtn() {
 
 float getVolume(int pin) {
   int raw = analogRead(pin);
-  return raw / 4095.0f; // Escala de 0.0 a 1.0
+  if (raw < 200) { //Zona muerta para asegurar que se queda al 0
+    return 0.0f; 
+  }else{
+    return (float)(raw - 200) / (4095.0f - 200.0f);
+  }
 }
 
 void updateTrackLEDs() {   // LEDs de Pistas
@@ -280,6 +285,7 @@ void updateTrackLEDs() {   // LEDs de Pistas
   digitalWrite(LED_T2, (trackFocus == TRACK2) ? HIGH : LOW);
   digitalWrite(LED_T3, (trackFocus == TRACK3) ? HIGH : LOW);
 }
+
 void updateRECLED(){      // LED de REC
   if (currentStatus == RECORDING) {
     digitalWrite(LED_REC, HIGH);
@@ -289,8 +295,6 @@ void updateRECLED(){      // LED de REC
 }
 
 void panicReset() {
-  Serial.println("!!! PANIC MODE: Reseteando sistema...");
+  Serial.println("!!! PANIC: Reseteando sistema...");
   ESP.restart();
-  Serial.println("Sistema reseteado. Listo para grabar Track 1.");
-  delay(500);
 }

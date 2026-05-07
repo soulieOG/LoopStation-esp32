@@ -14,14 +14,14 @@ Para ver la versión de este README en español, vaya al siguiente documento:
 
 <a name="introduction"></a>
 ## Introduction
-This is a small project designed to be a portable version of a functional device that acts as a variant of a loop station, made with an ESP32 as its core. It's layed out as a project for the class of Embedded Systems (college). Throughout this document, focal points of interest for the understanding/replication of the project will be displayed, such as the materials used and their estimated cost (rounding up and trying to account for the cost of the provided components given out by the teachers), the logic behind its functionality and others.
+This is a small project designed to be a portable version of a functional device that acts as a variant of a loop station, made with an ESP32 as its core. It's layed out as a project for the class of Embedded Systems (college). Throughout this document, focal points of interest for the understanding/replication of the project will be displayed, such as the materials used and their estimated cost (rounding up and trying to account for the cost of the provided components given out by the teachers), the logic behind its functionality and others.  
 
-Following this README will show the process that was followed for the creation of the process that lead to the final implementation of this code:  
+Following this README will show the process that was followed for the creation of the process that lead to the final implementation its first prototype with this code:  
 [Loop Station code](/loopStation.ino)
 
 <a name="define"></a>
 ## Defining the project
-Firstly, to understand the nature of the project, the concept of a loop station must be defined.
+Firstly, to understand the nature of the project, the concept of a loop station must be defined.  
 
 ### What is a loop station?
 Traditionally speaking, this concept is often associated (and you might be familiar with it) in the form of a guitar pedal. That however, is not the only context a loop station has. To generalize and establish the ground work for this project, a loop station will be defined as a device that allows its user to record/capture a series of audios (tracks, MIDI events, etc.) and loop them. In the case of this particular loop station, it will be record audios.  
@@ -40,9 +40,11 @@ Now, different limits have to be accounted for in the hardware section. Due to m
 
 This implies that when the loop station is set to record the first track of the loop (necessarily the Track 1, since it is the master), it can establish a duration of anything in between 0-20 seconds by pressing record button a second time to stop the recording or by letting it record until the natural end of the loop. This is accomplished by software delimitations (when record it's pressed for the first time, at reaching 20s of recording, the loop station exits recording state automatically). This way, throughout the whole loop, audios are set to be as long as the established duration.  
 
+This project is designed so it can be easily put apart, since some components must be returned, therefore it has a prototype concept that is not final, and it deals with some hardware issues that could be resolved by soldering everything properly in a board.  
+
 <a name="materials"></a>
 ## Materials
-In this section both hardware and software requirements will be specified. As it follows, it is not a set strict need to use the same ones, and the project can be adjusted to the specific modules being used. However, the documentation will follow closely the specified options that were chosen by the project group and big modifications of the approach to the project could greatly impact the hardware selection and software specifics.
+In this section both hardware and software requirements will be specified. As it follows, it is not a set strict need to use the same ones, and the project can be adjusted to the specific modules being used. However, the documentation will follow closely the specified options that were chosen by the project group and big modifications of the approach to the project could greatly impact the hardware selection and software specifics.  
 
 ### Components
 Ordered to more liable sources, sacrificing a posible higher price over components potentionally getting damaged during their shipment. Multiple components mentioned were bought in packs, therefore the shown price is an estimated cost per unit. Not every material listed is essential or estrictly necessary for the project. Due to the subjective nature of the chosen display and positioning of components in this version, this is not a strict guide, but rather an orientative documentation of the involved hardware. An audio input is needed, as well as an output, but you may follow as you deem appropiate with the exact models.
@@ -69,7 +71,7 @@ The total estimated price refers to the sum of all the materials used. The total
 |:--- |:--- |
 | 47€ | 33,5€ |  
 
-This prices, if the project was to be started from 0 are a bit unrealistec. It would be wiser to buy packs of components and the total price spent would be higher. Still, the true money invested on this project in particular is around the prices above. The difference it would make to add the full price of overpacked options that had extra components is only a waste if they are not going to be reused for any other purposes and one is confident that none of them will fail or break.
+These prices, if the project was to be started from 0 are a bit unrealistec. It would be wiser to buy packs of components and the total price spent would be higher. Still, the true money invested on this project in particular is around the prices above. The difference it would make to add the full price of overpacked options that had extra components is not really reflected on the proyect. Only if they are not going to be reused for any other purposes and one is confident that none of them will fail or break this price would increase the waste on correlation with the actual used components vs the amount that was bought.  
 
 ### Software
 For the coding part of the project, Arduino IDE was used for the whole duration of it. Reminders will be displayed later on, but the focal points one needs to run the loop station are:
@@ -82,50 +84,51 @@ Now that the objectives are clear, a logic behind what the device does can be de
 - What am I doing?  
 [IMG]  
 
-It is important to note that once the loop station begins a loop (records in the first track), the device is ALWAYS reproducing on loop. That does not mean that if we transition to recording the loop station stops playing, it only shifts its main focus to the recording task. If the loop station is in the play state, that simply means: 1- A loop has been established 2-It is not currently recording.
+It is important to note that once the loop station begins a loop (records in the first track), the device is ALWAYS reproducing on loop. That does not mean that if it transitions to recording the loop station stops playing, it only shifts its main focus to the recording task. If the loop station is in the play state, that simply means: 1- A loop has been established 2-It is not currently recording.
 
 - Where am I?   
 [IMG]  
 
-The program answers to a doble status method. When the device it's booted, it enters an idle state in which its only purpose is detecting if the user wants to start recording (pressing the record button). Anytime we want to record (the record button was pressed), at the beginning of each loop (for coordination purposes), the loop station enters a recording state. Once it is done recording, it goes into the play status, which implies that it already has a defined loop going (has a defined loopLength at the very least, be it silence or anything that was recorded on Track 1).  
+The program answers to a doble status method. When the device it's booted, it enters an idle state in which its only purpose is detecting if the user wants to start recording (pressing the record button). Anytime a record wants to be made (the record button was pressed), at the beginning of each loop (for coordination purposes), the loop station enters a recording state. Once it is done recording, it goes into the play status, which implies that it already has a defined loop going (has a defined loopLength at the very least, be it silence or anything that was recorded on Track 1).  
 
 On a similar note, it answers to its whereabouts. Am I on Track 1, 2 or 3? This helps to determine where it's recording when it captures the input and determines the added output of the three tracks. This also helps to aid the Master-slave dynamic. It is restricted to start recording at the beginning of each loop (idle) only if the loopstation is currently residing in Track 1.  
 
-While a restriction could be added to "ignore" any attempt at changing the track if we are in idle state because necessarily Track 1 has to be the recording target (just as it is done when recording, because a change of track should not be happening), it is not implemented because it aids to an early detection of possible hardware malfunction (the buttons can be clicked as soon as it's booted to control if the target track changes via LEDs).  
+While a restriction could be added to "ignore" any attempt at changing the track if we are in idle state because necessarily Track 1 has to be the recording target (just as it is done when recording, because a change of track should not be happening), it is not implemented because it aids to an early detection of possible hardware malfunction (the buttons can be pressed as soon as it's booted to control if the target track changes via LEDs).  
 
-With this information, an expansion of the logic is extended in two interesting features of the loop station:
+With this information, an expansion of the logic is extended in two interesting features of the loop station:  
+
 #### Pending recording
 - If the record button is pressed anytime other than the exact beginning of the loop, the system enters an in between "status" introduced by a boolean variable (will be defined in the software section). This in between "state" is simply an alert that let's the system know that the user wants to record, so it makes sure that its state changes accordingly at the beginning of the loop.
 - This only ever happens if the loop has been established. When it is first booted, the loop is not defined and it is not trying to read or reproduce anything, therefore the recording starts inmediatly upon pressing the button.  
 
-This concept is similar to a "pending" interruption logic. With this logic we do not bother the system until we reach the beginning of the loop, because there will be no recording in any other time frame due to the syncronization of the loop station and its nature.
+This concept is similar to a "pending" interruption logic. With this logic we do not bother the system until we reach the beginning of the loop, because there will be no recording in any other time frame due to the syncronization of the loop station and its nature.  
 
 #### Panic!
 - Pushing two track buttons at the same time sends a "PANIC!" signal that resets the ESP32.  
 
-What happens if multiple track buttons are pressed? Since once the hardware is introduced in a box, pressing the reset button of the board becomes an unreachable task, this limit case scenario is used for a quick reset of the board. If two buttons are pressed, a logic could be introduced where we only listen to the first one or any other alternative, but this case is seized as an opportunity for an easy reset. While a fifth button could be added as well to implement this feat, to simplify the hardware and minimize the components, it is established that pushing two track buttons at the same time sends what is determined as a "PANIC!" signal.
+What happens if multiple track buttons are pressed? Since once the hardware is introduced in a box, pressing the reset button of the board becomes an unreachable task, this limit case scenario is used for a quick reset of the board. If two buttons are pressed, a logic could be introduced where we only listen to the first one or any other alternative, but this case is seized as an opportunity for an easy reset. While a fifth button could be added as well to implement this feat, to simplify the hardware and minimize the components, it is established that pushing two track buttons (or more) at the same time sends what is determined as a "PANIC!" signal.  
 
 <a name="code"></a>
 ## Achieving expectations through code
-Once the logic behind it it's clearer, the code can be constructed following it. Case scenarios will be covered, and a way more extense explanation of the exact behavior of the device will be recollected in this section. The pins will be skipped, since they will be specified in the following section of the document (The hardware).
+Once the logic behind it it's clearer, the code can be constructed following it. Case scenarios will be covered, and a way more extense explanation of the exact behavior of the device will be recollected in this section. The pins will be skipped, since they will be specified in the following section of the document (The hardware). Throughout the code, different prints will be shown to debug the correct functioning of the system and hinting at a possible addition of a screen.  
 
 Specification of define section (pins) of the code here: [The hardware](#hardware).  
 
 There will only be one include needed for this version of the project:  
-#include "driver/i2s.h"
+#include "driver/i2s.h"  
 
 
 ### Constant definitions
 
 Right after the pins there is a section to declare the following: 
-- Constants are defined that set the max loop duration to 20 seconds for easy readjustments and to set the sample rate. 
-- Both state machines are declared as Enum types.
-- pendingRecord is a boolean defined to enter the middle state that alerts the loop station when it reaches the beginning of the loop that it needs to change to recording.
-- stopAtLoopEnd is declared so when the first instance of the loop is recorded on Track 1 for the first time, it automatically stops at 20 seconds if the record button is not pressed a second time before that.
-- Instances of the state machines are declared (trackFocus and currentStatus), and they are also initialized as the preset state of the looping machine when is booted.
-- MAX_SAMPLES is the result of operating to find what exactly is the end of the loop if its maximun duration is 20 seconds. This way, the loop can check if its positiong (that starts at 0) has reached the end and needs to go back to position 0.
-- The pointers for each track's buffers are initialized to null.
-- loopLength and currentPos are defined and initialized to 0. This variables determine the duration of the loop that will be set after the first iteration happens when record is pressed (being MAX_SAMPLES its maximun value possible), and currentPos will mark the iteration of the samples each time it advances, starting at 0 and ending at whatever loopLength is set to.
+- Constants are defined that set the max loop duration to 20 seconds for easy readjustments and to set the sample rate.  
+- Both state machines are declared as Enum types.  
+- pendingRecord is a boolean defined to enter the middle state that alerts the loop station when it reaches the beginning of the loop that it needs to change to recording.  
+- stopAtLoopEnd is declared so when the first instance of the loop is recorded on Track 1 for the first time, it automatically stops at 20 seconds if the record button is not pressed a second time before that.  
+- Instances of the state machines are declared (trackFocus and currentStatus), and they are also initialized as the preset state of the looping machine when is booted.  
+- MAX_SAMPLES is the result of operating to find what exactly is the end of the loop if its maximun duration is 20 seconds. This way, the loop can check if its positiong (that starts at 0) has reached the end and needs to go back to position 0.  
+- The pointers for each track's buffers are initialized to null.  
+- loopLength and currentPos are defined and initialized to 0. This variables determine the duration of the loop that will be set after the first iteration happens when record is pressed (being MAX_SAMPLES its maximun value possible), and currentPos will mark the iteration of the samples each time it advances, starting at 0 and ending at whatever loopLength is set to.  
 
 ```
 // Audio
@@ -147,7 +150,7 @@ SystemStatus currentStatus = IDLE;
 const uint32_t MAX_SAMPLES = MAX_LOOP_SECONDS * SAMPLE_RATE;
 
 // PSRAM buffers
-int16_t* track1 = NULL; // no debería ser int32_t?
+int16_t* track1 = NULL;
 int16_t* track2 = NULL;
 int16_t* track3 = NULL;
 
@@ -208,9 +211,9 @@ void setup() {
 #### The I2S setup  
 This section of the code is heavily influenced by the modus operandi of projects that use these components, therefore, changes can be applied but this setup should work perfectly fine if the intended components to use are the same.  
 
-Considerations have to be done if the microphone used is not mono (minor adjusting). The INMP441 is a mono microphone, and in this specific scenario the L/R will be connected to the GND so it is expected to go through the LEFT. If headphones are connected to the PCM5102, you will hear only through the left headphone (.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT).  
+Considerations have to be done if the microphone used is not mono (minor adjusting). The INMP441 is a mono microphone, and in this specific scenario the L/R will be connected to the GND so it is expected to go through the LEFT. If headphones are connected to the PCM5102, it wil be heard only through the left headphone (.channel_format = I2S_CHANNEL_FMT_ONLY_LEFT).  
 
-The .dma_buf_count = 4 and .dma_buf_len = 128 are set on low values to avoid delays between recording and reproducing, due to less retained time by the functions that block the flow.
+The .dma_buf_count = 4 and .dma_buf_len = 128 are set on low values to avoid delays between recording and reproducing, due to less retained time by the functions that block the flow (read and write).  
 
 ```
 void setupI2S() {
@@ -241,7 +244,7 @@ void setupI2S() {
 
 ### The loop 
 
-The variables needed for each loop iteration are declared (initialized to 0 if needed).
+The variables needed for each loop iteration are declared (initialized to 0 if needed).  
 
 ```
 void loop() {
@@ -253,7 +256,7 @@ void loop() {
 
 ```
 
-The loop station only checks the buttons if it has not started a loop.
+The loop station only checks the buttons if it has not started a loop.  
 
 ```
   if(currentStatus == IDLE){
@@ -261,7 +264,7 @@ The loop station only checks the buttons if it has not started a loop.
 
 ```
 
-To be constant throughout the whole loop, it starts listening to the microphone, but will only save it if it is recording, later on. It also has the first of many control sentences to achieve a clean audio (just to be safe).
+To be constant throughout the whole loop, it starts listening to the microphone, but will only save it if it is recording, later on. It also has the first of many control sentences to achieve a clean audio (just to be safe).  
 
 ```
   }else{
@@ -282,7 +285,7 @@ Just to safely control the proper coordination of the system, some values are on
     }
 ```
 
-On a similar manner, buttons are only checked every 441 samples
+On a similar manner, buttons are only checked every 441 samples.  
 
 ```
     if (currentPos % 441 == 0){ // Check buttons
@@ -290,18 +293,18 @@ On a similar manner, buttons are only checked every 441 samples
     }
 ```
 
-If it is recording, then it needs to process the sample it's receiving from the microphone in the correct track. Since it is delimeted that while recording the track focus can't change (specified in the [buttons](#buttons) auxiliar function) no mix ups happen.
+If it is recording, then it needs to process the sample it's receiving from the microphone in the correct track. Since it is delimeted that while recording the track focus can't change (specified in the [buttons](#buttons) auxiliar function) no mix ups happen.  
 
 ```
     // RECORDING LOGIC
-    if (currentStatus == RECORDING) { // Si estoy grabando, guardo donde me encuentro lo que estoy recogiendo del input del micro
+    if (currentStatus == RECORDING) { // If it is recording, it saves in the correct track the sample the mic is sending
       if (trackFocus == TRACK1) track1[currentPos] = sampleIn;
       else if (trackFocus == TRACK2) track2[currentPos] = sampleIn;
       else if (trackFocus == TRACK3) track3[currentPos] = sampleIn;
     }
 ```
 
-Since it has already read the volume values above, in case it has changed, it updates the volume accordingly by multiplying the volume (proportion) accordingly.
+Since it has already read the volume values above, in case it has changed, it updates the volume accordingly by multiplying the volume (proportion) accordingly.  
 
 ```
     // SOUND OUTPUT LOGIC
@@ -311,7 +314,7 @@ Since it has already read the volume values above, in case it has changed, it up
     int32_t s3 = (v3 < 0.01f) ? 0 : (int32_t)(track3[currentPos] * v3);
 ```
 
-This section mounts the output audio samples, adding the tracks. Since if one has not been recorded it is empy, no issues arise.
+This section mounts the output audio samples, adding the tracks. Since if one has not been recorded it is empy, no issues arise.  
 
 ```
     // Reproduce any track that is not being recorded
@@ -339,9 +342,9 @@ This next line reproduces the output audio, sending it to the PCM5102.
     i2s_write(I2S_NUM_0, &sampleOut, sizeof(int16_t), &bytesWritten, portMAX_DELAY);
 ```
 
-This huge section of the code is the tricky bit of the logic behind it. The *if* sentences check certain values that could be traded for equivalents, or could be readjusted wiwth the logic. Firstly, it moves the position. Secondly it parts the code into two sections 1) We already established a loop and recorded the master track (looplength is more than 0, which could also imply that the loop station != IDLE). 2) It is recording the master track for the first time, therefore there isn't an established loop yet.  
+This huge section of the code is the tricky bit of the logic behind it. The *if* sentences check certain values that could be traded for equivalents, or could be readjusted wiwth the logic. Firstly, it moves the position. Secondly it parts the code into two sections 1) Already established a loop and recorded the master track (looplength is more than 0, which could also imply that the loop station != IDLE). 2) It is recording the master track for the first time, therefore there isn't an established loop yet.  
 
-Inside the first condition it also has a parted logic. First, it checks if it has reached the end of the loop, so it can reset the position to 0. After setting it to the first position it checks if any pending recordings are waiting (if the REC button was pressed). After managing the pending record logic (updating LEDs and status, boolean variables...) it needs to check if it was recording, because it has reached the end of the loop so it needs to automatically stop the recording (change status, LEds...). 
+Inside the first condition it also has a parted logic. First, it checks if it has reached the end of the loop, so it can reset the position to 0. After setting it to the first position it checks if any pending recordings are waiting (if the REC button was pressed). After managing the pending record logic (updating LEDs and status, boolean variables...) it needs to check if it was recording, because it has reached the end of the loop so it needs to automatically stop the recording (change status, LEds...).  
 
 Inside the second condition it checks if it has naturally reached the end of the loop (MAX_SAMPLES), since it already knows that it has to be recording the first track for the first time. If that is the case, it updates all variables accordingly, similar to the previous explained parts.  
 
@@ -404,7 +407,7 @@ The very next thing it does is detect if there was a PANIC! signal thrown, this 
                           ...
 ```
 
-The next section updates the status and LEDs only if 1) it's a different one 2) It is not recording
+The next section updates the status and LEDs only if 1) It's a different one 2) It is not recording.  
 
 ```
   // Update the current track focus only if it has changed and it's not recording
@@ -439,7 +442,6 @@ The REC button has a rising edge control sentence so it can deal with the REC bu
   }
   lastState = currentRecState;
 }
-                          ...
 ```
 
 #### 2) handleActionBtn 
@@ -493,7 +495,7 @@ This function is in charge of controlling the input of the intended potentiomete
 ```
 float getVolume(int pin) {
   int raw = analogRead(pin);
-  if (raw < 250) { //Zona muerta para asegurar que se queda al 0
+  if (raw < 250) { // Dead zone for mute
     return 0.0f; 
   }else{
     return (float)(raw - 200) / (4095.0f - 200.0f);
@@ -508,7 +510,7 @@ float getVolume(int pin) {
 This function is invoked only when a button that affects the track LEDs state is pressed. This way, it makes sure that the previous LED is turned off and the right one on.
 
 ```
-void updateTrackLEDs() {   // LEDs de Pistas
+void updateTrackLEDs() {   // Track LEDs
   digitalWrite(LED_T1, (trackFocus == TRACK1) ? HIGH : LOW);
   digitalWrite(LED_T2, (trackFocus == TRACK2) ? HIGH : LOW);
   digitalWrite(LED_T3, (trackFocus == TRACK3) ? HIGH : LOW);
@@ -535,7 +537,7 @@ This function is invoked when buttons detects that more than one of the track bu
 
 ```
 void panicReset() {
-  Serial.println("!!! PANIC: Reseteando sistema...");
+  Serial.println("!!! PANIC: Reseteating system...");
   ESP.restart();
 }
 ```
@@ -551,8 +553,8 @@ On a side note, make sure the only include (#include "driver/i2s.h") is download
 
 <a name="hardware"></a>
 ## The hardware
-Since the software is layed out, the only thing left is to connect the hardware. BEWARE, issues might arise if you do not test the components by themselves, it is recommended that you test them before hand so you can discard an issue with a broken component (or incorrect wiring/soldering) and safe yourself time later on. To aid you in this tedious task, test codes will be provided here:  
-[Test codes for INMP441 and PCM5102]()  
+Since the software is layed out, the only thing left is to connect the hardware. BEWARE, issues might arise if you do not test the components by themselves. It is recommended that you test them before hand so you can discard an issue with a broken component (or incorrect wiring/soldering) and safe yourself time later on. To aid you in this tedious task, test codes will be provided here:  
+[Test codes for INMP441 and PCM5102](/tests)  
 
 The tests are run with the ESP32S3, but code and pins should be easily adapted to similar boards (special care should be invested in the use of memory that the board allows, since the one used in this project can use OPI PSRAM).  
 
@@ -583,14 +585,13 @@ To properly observe if the microphone works, this time the aid of the serial plo
 
 [PINS IMAGE]
 
-#### LEDs, buttons, potentiometers
-This components are easily tested with the code itself. LEDs can be easily tested with a simple circuit that does not require the ESP, but it will follow the same simple scheme shown below.
-
-[SIMPLE LED CIRCUIT IMAGE]
+#### LEDs, buttons and potentiometers
+This components are easily tested with the code itself. LEDs can be easily tested with a simple circuit that does not require the ESP, but it will follow the same simple scheme of power, resistance and LED (traditional circuit).
 
 And the pins for this components should be as it follows:  
 
 [PINS IMAGE]
+
  ```
 // Potenciometers pins
 #define POT_T1 12  
@@ -615,7 +616,7 @@ Once it has been assured that the LEDs work, it can be determined if the buttons
 
 
 ### Putting the loopStation together
-Now that it was assured that everything works just fine, this part only requires the upmost care when connecting what to where. The biggest issues arise here, so proceed with caution. This is the layout presented in the version of the loop station that was presented for the class. Following the pin images inserted above, the circuit should look comething similar to this:  
+Now that it was assured that everything works just fine, this part only requires the upmost care when connecting what to where. The biggest issues arise here, so proceed with caution. This is the layout presented in the version of the loop station that was presented for the class. Following the pin images inserted above, the circuit should look comething similar to this (does not include the INMP441 and PCM5102):  
 
 [TINKERCAD VERSION OF THE CIRCUIT]
 
@@ -655,7 +656,7 @@ This case scenario is identic in both cases. The only change is which track it's
 If the objective is to overrun any of the existing tracks, everything else will keep happening accordingly, but the overdubbed track stops being reproduced, as it is being recorded again. The track button intended to be overdubbed must be pressed and the record button as well (the order is not relevant as long as the right track button has been pressed before the loop reaches the beginning again and stars recording).
 
 ### 5) PANIC! is invoked
-Panic, either throught accidentally pressing two track buttons at the same time, or as an intentionate way of a fast reset, happens by pressing or holding two different track buttons at the same time. It can happen at any moment, except if the loop station is recording because it ignores track buttons.
+Panic, either throught accidentally pressing two track buttons at the same time (or more), or as an intentionate way of a fast reset, happens by pressing or holding two different track buttons at the same time. It can happen at any moment.  
 
 
 <a name="documentation"></a>
