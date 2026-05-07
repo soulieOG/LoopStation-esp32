@@ -48,9 +48,6 @@ Este proyecto está diseñado para que pueda desmontarse fácilmente, ya que alg
 ## Materiales  
 En esta seccion los requirimientos tanto de software como de hardware serán especificados. Tal y como se presenta, no es una necesidad estricta usar los mismos, y el proyecto se puede ajustar a diferentes módulos. Sin embargo, esta documentación sigue el proceso de manera fiel a las opciones especificadas que se escogieron por el grupo de trabajo y grandes modificacions del planteamiento del proyecto podrían conllevar un gran impacto en los requerimientos de software y hardware.  
 
-This project is designed so it can be easily put apart, since some components must be returned, therefore it has a prototype concept that is not final, and it deals with some hardware issues that could be resolved by soldering everything properly in a board.  
-Es te proyecto está diseñado para que se pueda desmontar de manera fácil, ya que algunos componentes deben ser devueltos o reotulizados, por lo tanto es un concepto de prototipo no final, que lidia con algunos problemas de hardware que se podrían solventar con una adecuada soldadura de los componentes en una placa.  
-
 ### Componentes  
 Han sido pedidos por medios más fiables a coste de un posible mayor precio, sin arriesgar a que llegaran dañados. Varios de los componentes fueron comprados en packs de varias unidades, por lo que se reflejará el precio estimado de una unidad del pack. No todos los materiales usados en esta versión son necesarios o indispensables, ya que el montaje ha sido hecho de manera subjetiva para mantener una limpieza y separación del circuito. Por lo tanto, no es una guía estricta, sino orientativa, del hardware implicado en el proyecto.  
 
