@@ -86,13 +86,17 @@ Respecto a la parte de código del proyecyto, se ha utilizado Arduino IDE. Se ha
 <a name="logica"></a>
 ## La lógica del sistema  
 Ahora que los objetivos están claros, se puede definir una lógica para el sistema. Esto se consigue mediante dos preguntas simples:  
-- ¿Qué estoy haciendo?  
-[IMG]  
+- ¿Qué estoy haciendo?
+
+![IMG](https://github.com/user-attachments/assets/7c5a5b7b-5497-40b6-ad98-fd4cd1dbc56b)
+
 
 Es importante recalcar que una vez que la loop station empieza un loop (graba el primer track), el dispositivo SIEMPRE está reproduciendo en bucle. Eso no significa que si se cambia a grabando la loop station deja de reproducir, simplemente cambia su foco principal a la tarea de grabar. Si la loop station se encuenta en el estado de reproducir, eso simplemente significa que 1- Se ha establecido un bucle 2- Actualmente no está grabando nada.  
 
-- ¿Dónde estoy?  
-[IMG]  
+- ¿Dónde estoy?
+
+![IMG](https://github.com/user-attachments/assets/8f85534d-6779-4fba-9019-fdd935b59e33)
+
 
 El programa responde a un doble estado. Cuando el dispositivo se inicia, entra un estado de reposo (IDLE) donde su único propósito es detectar si el usuario quiere empezar a grabar (presionar el botón de grabar). Cada vez que se quiera grabar (se ha presionado el botón de grabar), al principio de cada loop (por coordinación), la loop station entra en su estado de grabar. Cuando termina de grabar, pasa a reproducir, lo que implica que ya hay un bucle definido (tiene longitud de loop, looplength, definida por lo menos, da igual si se ha grabado silencio en la pista 1).  
 
@@ -577,7 +581,8 @@ El objetivo aquí es reproducir una escala para asegurarse de que el módulo fun
 
 Si no se escucha ninguna escala, primero comprueba la soldadura y los cables. Si eso está bien, comprueba de nuevo la conexión I2S, ya que es la causa más probable del silencio y fue el principal problema durante el desarrollo de este proyecto.
 
-[PINS IMAGE]
+![PINS IMAGE](https://github.com/user-attachments/assets/645e0754-2b16-48e0-ac9e-b72c79c2bd8f)
+
 
 ```
 // Pines I2S
@@ -593,14 +598,14 @@ Para observar correctamente si el micrófono funciona, esta vez será necesaria 
 
 - Pequeña indicación: si no funciona, comprueba que el puerto sea el correcto y que la opción USB CDC On Boot esté en "Enabled" (Activado).
 
-[PINS IMAGE]
+![PINS IMAGE](https://github.com/user-attachments/assets/d0ef23d3-a252-45be-8292-fc218910dd54)
 
 #### LEDs, botones y potenciómetros
 Estos componentes se prueban fácilmente con el propio código. Los LEDs se pueden testear de forma sencilla con un circuito básico que no requiere el ESP, pero seguirá el mismo esquema simple tradicional de LED, resistencia y batería.  
 
 Y los pines para estos componentes deberían ser los siguientes:  
 
-[PINS IMAGE]
+![PINS IMAGE](https://github.com/user-attachments/assets/df9f681d-0422-4225-afe1-7667cf9dbacc)
 
  ```
 // Pines potenciometros
@@ -628,11 +633,11 @@ Una vez se haya asegurado de que los LEDs funcionan, se puede determinar si los 
 ### Montaje de la loop station
 Ahora que se ha asegurado que todo funciona correctamente, esta parte solo requiere el máximo cuidado al conectar cada cosa en su lugar. Los mayores problemas suelen surgir aquí, así que procede con precaución. Este es el esquema presentado en la versión de la loop station que se entregó para la clase. Siguiendo las imágenes de los pines insertadas anteriormente, el circuito debería verse algo parecido a esto (sin contrar el INMP441 y el PCM5102):  
 
-[TINKERCAD VERSION OF THE CIRCUIT]
+![WOKWI VERSION OF THE CIRCUIT](https://github.com/user-attachments/assets/ba320ab9-42cf-4e1c-8756-6e0e3c1e4beb)
 
 - Ten en cuenta que hay muchas formas de conectar esto, pero está limitado por los cables, el uso de una placa de expansión u otros factores. En este caso, este es el ejemplo del montaje realizado intentando lograr una buena división por secciones de las partes del hardware. Este esquema se traduce en muchas versiones de la vida real, siendo esta la que se hizo para la presentación del proyecto:  
 
-[IRL HARDWARE PIC]  
+![IRL HARDWARE PIC](https://github.com/user-attachments/assets/2a8f897d-ad34-49a3-9066-f8b8dadb690e)  
 
 Como regla general, uno no debe tener miedo de utilizar intermediarios como protoboards o placas de expansión, que simplifican este proceso. Lo único que hay que tener en cuenta son las posibles interferencias derivadas del tipo de cables, su longitud y el posible impacto que esto tenga en la entrada/salida de audio.  
 
