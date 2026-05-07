@@ -76,9 +76,9 @@ Se refiere entonces el precio total estimado a la suma del precio de todos los m
 Estos precios, si el proyecto fuera a empezarse de cero, son algo surrealistas. Se recomendaría comprar packs de componentes, subiendo algo el precio. De todas maneras, el dinero realmente invertido en este proyecto particular se ve reflejado en los precios de las tablas. La diferencia que marcaría añadir el precio entero de packs con componentes extras no constituye un gasto real en el proyecto, ya que ese dinero solo se desperdiciaría exclusivamente en este proyecto si no se fueran a usar en ningún futuro proyecto. También hay que considerar la posibilidad de que un componente se rompa o no funcione.  
 
 ### Software
-Respecto a la parte de código del proyecyto, se ha utilizado Arduino IDE. Se harán recordatorios a lo largo del documento para ciertos específicos de la configuración, pero hay dos principales focos que tener en cuenta:  
+Respecto a la parte de código del proyecto, se ha utilizado Arduino IDE. Se harán recordatorios a lo largo del documento para ciertos específicos de la configuración, pero hay dos principales focos que tener en cuenta:  
 - La elección de board debe estar descargada si no la tiene por defecto Arduino.  
-- El Puerto (Port) correcto está seleccionado (asegurarse de quqe el COM es correcto y ante la duda si hay vrios, conectar y desconectar la board para ver cuál es). 
+- El Puerto (Port) correcto está seleccionado (asegurarse de que el COM es correcto y ante la duda si hay varios, conectar y desconectar la board para ver cuál es). 
 
 <a name="logica"></a>
 ## La lógica del sistema  
@@ -104,7 +104,7 @@ Mientras que se podría añadir una restricción para ignorar si se intenta camb
 Con esta información, se introducen dos lógicas interesantes de la loop station:  
 
 #### Grabación pendiente
-- Si se presiona el botón de grabar en cualquier momento que no sea justo al principio del bucle, el sistema entra en un "estado" intermedio introducido por una variable nooleana (se especificará en la sección de software). Este "estado" intermedio es simplemente una alerta para que el sistema sepa que cuando vuelve al principio del loop tiene que empezar a grabar, asegurando que se cambie el estado.  
+- Si se presiona el botón de grabar en cualquier momento que no sea justo al principio del bucle, el sistema entra en un "estado" intermedio introducido por una variable booleana (se especificará en la sección de software). Este "estado" intermedio es simplemente una alerta para que el sistema sepa que cuando vuelve al principio del loop tiene que empezar a grabar, asegurando que se cambie el estado.  
 - Esto solo pasa si se ha establecido un loop. Cuando se inicializa/conecta, el bucle no está definido y no está intentando leer or reproducir nada, así que empieza a grabar inmediatamente tras pulsar el botón de grabar.  
 
 Con este concepto similar a las interrupciones pendientes, no se molesta al sistema hasta que se encuentra en el principio del bucle, ya que se ha establecido que no se grabará en ningún otro momento para una sincronización adecuada de la loop station que siga la naturaleza establecida.  
