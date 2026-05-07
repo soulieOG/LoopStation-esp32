@@ -44,7 +44,7 @@ This implies that when the loop station is set to record the first track of the 
 ## Materials
 In this section both hardware and software requirements will be specified. As it follows, it is not a set strict need to use the same ones, and the project can be adjusted to the specific modules being used. However, the documentation will follow closely the specified options that were chosen by the project group and big modifications of the approach to the project could greatly impact the hardware selection and software specifics.
 
-### Hardware
+### Components
 Ordered to more liable sources, sacrificing a posible higher price over components potentionally getting damaged during their shipment. Multiple components mentioned were bought in packs, therefore the shown price is an estimated cost per unit. Not every material listed is essential or estrictly necessary for the project. Due to the subjective nature of the chosen display and positioning of components in this version, this is not a strict guide, but rather an orientative documentation of the involved hardware. An audio input is needed, as well as an output, but you may follow as you deem appropiate with the exact models.
   
 | Name | Units | Estimated Cost/unit (euros) | Bought/Supplied |
