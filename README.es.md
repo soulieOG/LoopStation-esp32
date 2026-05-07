@@ -4,7 +4,7 @@ To see the English version of this README.md click below.
 
 ## Índice
 * [Introducción](#introduccion)
-* [Defining the project](#define)
+* [Definiendo el proyecto](#define)
 * [Materiales](#materiales)
 * [La lógica del sistema](#logica)
 * [Alcanzando las espectativas con el código](#code)
@@ -24,17 +24,17 @@ Seguir este README para observar el proceso llevado a cabo para la creación fin
 ## Definiendo el proyecto  
 Primero, para entender la naturaleza del proyecto, se debe definir el concepto de loop station.  
 
-### Qué es una loop station?
+### ¿Qué es una loop station?
 Tradicionalmente hablando, este concepto suele asociarse (y puede que estés familiarizado con ello) a los pedales de guitarra. Sin embargo, ese no es el único contexto que tiene una loop station. Para generalizar y sentar las bases de este proyecto, se definirá una loop station como un dispositivo que permite al usuario grabar o capturar una serie de audios (pistas, eventos MIDI, etc.) y reproducirlos en bucle (loop). En el caso concreto de esta estación de bucles, se encargará de grabar audios.
 
 De esta manera, se pueden crear bucles multicapa, dando un amplio margen para que la creatividad tome el control (armonizar, grabar una base de fondo, etc.).
 
-### Defining its limits
+### Estableciendo los límites
 Una loop station profesional puede variar en su composición (número de pistas, opciones de manipulación, etc.). Debido a esto, es necesario establecer las bases de las limitaciones y expectativas de esta mini versión:  
 
 - 3 pistas funcionales (grabación, overdub y control de volumen).  
 - Graban audios a través del módulo de micrófono.  
-- La primera pista será una pista "maestra" (define la longitud del bucle), y las otras dos serán sus esclavas.  
+- La primera pista será una pista "maestra" ( la longitud del bucle), y las otras dos serán sus esclavas.  
 
 Ahora bien, hay que tener en cuenta diferentes límites en la sección de hardware. Debido a la gestión de memoria (PSRAM), se establecerá que:
 
@@ -106,7 +106,7 @@ Mientras que se podría añadir una restricción para ignorar si se intenta camb
 
 Con esta información, se introducen dos lógicas interesantes de la loop station:  
 
-#### Pending recording
+#### Grabación pendiente
 - Si se presiona el botón de grabar en cualquier momento que no sea justo al principio del bucle, el sistema entra en un "estado" intermedio introducido por una variable nooleana (se especificará en la sección de software). Este "estado" intermedio es simplemente una alerta para que el sistema sepa que cuando vuelve al principio del loop tiene que empezar a grabar, asegurando que se cambie el estado.  
 - Esto solo pasa si se ha establecido un loop. Cuando se inicializa/conecta, el bucle no está definido y no está intentando leer or reproducir nada, así que empieza a grabar inmediatamente tras pulsar el botón de grabar.  
 
@@ -121,7 +121,7 @@ Qué pasa si se pulsan botones de manera simultanea de pistas? Como el hardware 
 ## Alcanzando las espectativas con el código  
 Una vez la lógica ha sido clarificada, el código se puede empezar a cosntruir siguiéndola. se cubrirán diferentes casos de uso, y una explicación más exhaustiva de el comportamiento exacto del disporitivo se reflejará en esta sección. Los pines se mencionarán más adelante en la siguiente sección de hardware. A lo largo del código se realizarán diferentes impresiones por pantalla que servirán de comprobación del correcto funcionamiento, además de servir de preámbulo para la adición de una posible pantalla.  
 
-La especificación de los define de los pines en el código se encuentra aquí: [El hardware](#hardware).  
+La especificación de los  de los pines en el código se encuentra aquí: [El hardware](#hardware).  
 
 Sólo hay un include que se necesita para esta versión:  
 #include "driver/i2s.h"  
@@ -129,20 +129,20 @@ Sólo hay un include que se necesita para esta versión:
 
 ### Definición de constantes
 Justo después de la declaración de los pines se encuentra una sección que declara lo siguiente:  
-- Constantes que definen la duración máxima del bucle en 20 segundos para un fácil reajuste y para el cçalculo de la frecuencia.  
+- Constantes que n la duración máxima del bucle en 20 segundos para un fácil reajuste y para el cçalculo de la frecuencia.  
 - Las dos máquinas de estados por medio de tipo Enumeración.
 - pendingRecord (grabación pendiente) is una variable booleana para indicarle a la loop station que tiene que empezar a grabar una vez vuelva al principio del bucle.  
 - stopAtLoopEnd (parar al final del bucle) se declara para que cuando se grabe la primera isntancia de la pista 1, pare automáticamente a los 20 segundos si no se presiona el botón de grabar una segunda vez antes de eso.  
 - Las instancias de las máquinas de estado se declaran e inicializan (trackFocus, pista de focus y currentStatus, estado actual).  
 - MAX_SAMPLES es el resultado de operar con la duración máxima del bucle y la frecuencia establecida, para encontrar el final del bucle que empieza en 0.  
 - Los punteros para los buffers de cada track, inicializados a null.  
-- loopLength (longitu del bucle) y currentPos (posición actual) se definen e inicializan a 0. Estas variables determinan la duración del bucle que se pondrá una vez se grabe la pista maestra por primera vez (siendo MAX_SAMPLES su valor máximo) y currentPost marcará la posición que irá aumentando según avanza el loop (empezando en 0 y acabando en looplength).  
+- loopLength (longitu del bucle) y currentPos (posición actual) se n e inicializan a 0. Estas variables determinan la duración del bucle que se pondrá una vez se grabe la pista maestra por primera vez (siendo MAX_SAMPLES su valor máximo) y currentPost marcará la posición que irá aumentando según avanza el loop (empezando en 0 y acabando en looplength).  
 
 
 ```
 // Audio
-#define MAX_LOOP_SECONDS 20
-#define SAMPLE_RATE   48000
+# MAX_LOOP_SECONDS 20
+# SAMPLE_RATE   48000
 
 // Estados
 enum SelectedTrack { TRACK1, TRACK2, TRACK3 };  // Donde estoy?
@@ -163,7 +163,7 @@ int16_t* track1 = NULL;
 int16_t* track2 = NULL;
 int16_t* track3 = NULL;
 
-// Variables que definen mi loop
+// Variables que n mi loop
 uint32_t loopLength = 0;
 uint32_t currentPos = 0;
 ```
@@ -253,7 +253,7 @@ void setupI2S() {
 ```
 
 
-### The loop 
+### El loop 
 Las variables que va a necesitar el bucle se declaran (e inicializan a 0 si es necesario).  
 
 ```
@@ -586,10 +586,10 @@ Si no se escucha ninguna escala, primero comprueba la soldadura y los cables. Si
 
 ```
 // Pines I2S
-#define I2S_BCLK      41
-#define I2S_WS        40
-#define I2S_DIN_MIC   47
-#define I2S_DOUT_DAC  42
+# I2S_BCLK      41
+# I2S_WS        40
+# I2S_DIN_MIC   47
+# I2S_DOUT_DAC  42
 ```
 
 
