@@ -139,7 +139,7 @@ void loop() {
       v3 = ((tmp = getVolume(POT_T3)) != v3) ? tmp : v3;
     }
 
-    if (currentPos % 441 == 0){ // Comprobamos botones y hacemos update de LEDS cada ciertas muestras
+    if (currentPos % 441 == 0){ // Comprobamos botones
       buttons();
     }
 
